@@ -1,4 +1,4 @@
-﻿import { add, subtract } from './math.test';
+﻿import { add, subtract } from './math';
 
 describe('math functions', () => {
   test('adds 1 + 2 to equal 3', () => {
