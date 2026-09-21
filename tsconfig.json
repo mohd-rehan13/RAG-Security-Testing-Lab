@@ -9,7 +9,7 @@
     // See also https://aka.ms/tsconfig/module
     "module": "commonjs",
     "target": "es2022",
-    "types": [],
+    "types": ["jest"], // Added jest to types array
     "lib": ["es6"],
 
     // Other Outputs
@@ -28,7 +28,7 @@
     // Recommended Options
     "strict": true,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false, // Changed to false to allow ES module syntax
     "isolatedModules": true,
     "skipLibCheck": true,
 

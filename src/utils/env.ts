@@ -15,8 +15,8 @@ export function validateEnvironment(): void {
     'RAG_API_PORT',
     'REPORT_OUTPUT_DIR'
   ];
-
-  const missingVars = requiredVars.filter(varName => !process.env[varName]);
+  
+  const missingVars = requiredVars.filter(varName => !process.env[varName as keyof NodeJS.ProcessEnv]);
 
   if (missingVars.length > 0) {
     throw new Error(
@@ -31,7 +31,7 @@ export function validateEnvironment(): void {
  * @returns {string} Ollama base URL
  */
 export function getOllamaBaseUrl(): string {
-  return process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+  return process.env['OLLAMA_BASE_URL'] || 'http://localhost:11434';
 }
 
 /**
@@ -39,7 +39,7 @@ export function getOllamaBaseUrl(): string {
  * @returns {string} Ollama model name
  */
 export function getOllamaModel(): string {
-  return process.env.OLLAMA_MODEL || 'llama3.2:3b';
+  return process.env['OLLAMA_MODEL'] || 'llama3.2:3b';
 }
 
 /**
@@ -47,7 +47,7 @@ export function getOllamaModel(): string {
  * @returns {number} API port
  */
 export function getApiPort(): number {
-  return parseInt(process.env.RAG_API_PORT || '3001', 10);
+  return parseInt(process.env['RAG_API_PORT'] || '3001', 10);
 }
 
 /**
@@ -55,5 +55,5 @@ export function getApiPort(): number {
  * @returns {string} Report output directory
  */
 export function getReportOutputDir(): string {
-  return process.env.REPORT_OUTPUT_DIR || 'reports';
+  return process.env['REPORT_OUTPUT_DIR'] || 'reports';
 }
