@@ -1,0 +1,29 @@
+{
+  "name": "rag-security-testing-lab",
+  "version": "1.0.0",
+  "description": "A local, portfolio-ready lab for evaluating a retrieval-augmented generation (RAG) assistant against prompt injection, poisoned knowledge-base documents, and synthetic sensitive-data leakage.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint src --ext .ts,.js",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.12",
+    "typescript": "^5.4.5"
+  }
+}
