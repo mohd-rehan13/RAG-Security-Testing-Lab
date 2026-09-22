@@ -4,6 +4,15 @@
   <video src="media/brag_launch.mp4" width="800" controls></video>
 </div>
 
+## What is this project?
+
+This project is a localized, safe sandbox environment built to study and defend against security vulnerabilities in **Retrieval-Augmented Generation (RAG)** systems. RAG AI assistants are increasingly targeted by attackers who hide malicious instructions or attempt to extract sensitive data hidden within the context. 
+
+With this testing lab, security researchers and developers can:
+- Execute real prompt injections against a local LLM.
+- Demonstrate data leakage and "RAG poisoning".
+- Toggle between baseline (vulnerable) and hardened (defended) states to measure the effectiveness of defense-in-depth mitigations like input sanitization, context filtering, and output redaction.
+
 ## How the Hack Works
 
 The lab provides a visual interface for demonstrating how an AI assistant handles malicious inputs and RAG poisoning.
