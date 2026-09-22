@@ -4,10 +4,24 @@
   <video src="media/brag_launch.mp4" width="800" controls></video>
 </div>
 
-### Cyberpunk Interactive UI
+## How the Hack Works
+
+The lab provides a visual interface for demonstrating how an AI assistant handles malicious inputs and RAG poisoning.
+
+### 1. System Boot
+The neural-net interface boots up, providing a clean chat terminal to test prompt injections.
 ![System Boot](media/action_1_boot.jpg)
+
+### 2. The Hack Attempt
+An attacker inputs a malicious payload designed to override system instructions and extract sensitive data.
 ![Hack Attempt](media/action_2_hack.jpg)
+
+### 3. Decrypt Mode (Raw RAG Blocks)
+By toggling **Decrypt Mode**, you can peek behind the scenes to see the exact contextual data blocks the AI retrieved—including any hidden secrets.
 ![Decrypt Mode](media/action_3_decrypt.jpg)
+
+### 4. Critical Fault & Leakage
+If the prompt injection succeeds, the system suffers a critical fault and leaks the unauthorized secret straight into the terminal.
 ![Critical Fault](media/action_4_error.jpg)
 
 A local, portfolio-ready lab for evaluating a retrieval-augmented generation (RAG) assistant against prompt injection, poisoned knowledge-base documents, and synthetic sensitive-data leakage.

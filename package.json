@@ -11,7 +11,10 @@
     "test": "jest",
     "lint": "eslint src --ext .ts,.js",
     "typecheck": "tsc --noEmit",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "tsc && node build/src/api/server.js",
+    "promptfoo:baseline": "promptfoo eval -c promptfoo/baseline.yaml",
+    "promptfoo:hardened": "promptfoo eval -c promptfoo/hardened.yaml"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +30,10 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "dotenv": "^18.0.1"
+    "@types/express": "^5.0.6",
+    "axios": "^1.20.0",
+    "dotenv": "^18.0.1",
+    "express": "^5.2.1",
+    "promptfoo": "^0.120.19"
   }
 }

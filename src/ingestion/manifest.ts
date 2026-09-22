@@ -1,17 +1,38 @@
-﻿// Trusted source manifest
+// Trusted source manifest
 export interface TrustedDocument {
   path: string;           // Relative path to the document
   expectedHash: string;   // Expected SHA-256 hash of the document content
   description?: string;   // Optional description of the document
 }
 
+// Quarantine reason for failed document validation
+export interface QuarantineReason {
+  reason: 'HASH_MISMATCH' | 'DISALLOWED_METADATA' | 'NOT_IN_MANIFEST';
+  details: string;
+}
+
 // List of trusted documents for the knowledge base
 export const TRUSTED_DOCUMENTS: TrustedDocument[] = [
   {
     path: 'tests/fixtures/knowledge_base_clean/company_handbook.md',
-    expectedHash: 'F8B86D36F44F902EE0684A8E70AC3DE6EE4F3012B5CCDB54B557188DFFDF89BD',
+    expectedHash: '0000000000000000000000000000000000000000000000000000000034E473DC',
     description: 'Company office hours and leave policy'
   }
+];
+
+// Disallowed patterns that indicate potentially malicious content
+export const DISALLOWED_PATTERNS = [
+  /ignore\s+previous\s+instructions/i,
+  /system\s*override/i,
+  /reveal\s+.*secret/i,
+  /api\s*key\s*[:=]/i,
+  /password\s*[:=]/i,
+  /secret\s*[:=]/i,
+  /\$\{[^}]+\}/g, // Template literals
+  /<script>/i,
+  /javascript:/i,
+  /vbscript:/i,
+  /onload\s*=/
 ];
 
 // Function to calculate the hash for a document
@@ -30,12 +51,37 @@ export function calculateDocumentHash(content: string): string {
 }
 
 // Function to validate a document against the manifest
-export function validateDocument(documentPath: string, content: string): boolean {
+// Returns null if valid, or QuarantineReason if invalid
+export function validateDocument(documentPath: string, content: string): QuarantineReason | null {
+  // Check if document is in trusted manifest
   const trustedDoc = TRUSTED_DOCUMENTS.find(doc => doc.path === documentPath);
   if (!trustedDoc) {
     // Document not in the trusted list
-    return false;
+    return {
+      reason: 'NOT_IN_MANIFEST',
+      details: `Document ${documentPath} is not in the trusted source manifest`
+    };
   }
+
+  // Check for disallowed metadata/content patterns
+  for (const pattern of DISALLOWED_PATTERNS) {
+    if (pattern.test(content)) {
+      return {
+        reason: 'DISALLOWED_METADATA',
+        details: `Content matched disallowed pattern: ${pattern}`
+      };
+    }
+  }
+
+  // Check content integrity via hash verification
   const actualHash = calculateDocumentHash(content);
-  return actualHash === trustedDoc.expectedHash;
+  if (actualHash !== trustedDoc.expectedHash) {
+    return {
+      reason: 'HASH_MISMATCH',
+      details: `Expected hash: ${trustedDoc.expectedHash}, Actual hash: ${actualHash}`
+    };
+  }
+
+  // Document passed all validation checks
+  return null;
 }

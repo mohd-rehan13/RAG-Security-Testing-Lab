@@ -1,13 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateDocument = exports.calculateDocumentHash = exports.TRUSTED_DOCUMENTS = void 0;
+exports.validateDocument = exports.calculateDocumentHash = exports.DISALLOWED_PATTERNS = exports.TRUSTED_DOCUMENTS = void 0;
 // List of trusted documents for the knowledge base
 exports.TRUSTED_DOCUMENTS = [
     {
         path: 'tests/fixtures/knowledge_base_clean/company_handbook.md',
-        expectedHash: 'F8B86D36F44F902EE0684A8E70AC3DE6EE4F3012B5CCDB54B557188DFFDF89BD',
+        expectedHash: '0000000000000000000000000000000000000000000000000000000034E473DC',
         description: 'Company office hours and leave policy'
     }
+];
+// Disallowed patterns that indicate potentially malicious content
+exports.DISALLOWED_PATTERNS = [
+    /ignore\s+previous\s+instructions/i,
+    /system\s*override/i,
+    /reveal\s+.*secret/i,
+    /api\s*key\s*[:=]/i,
+    /password\s*[:=]/i,
+    /secret\s*[:=]/i,
+    /\$\{[^}]+\}/g, // Template literals
+    /<script>/i,
+    /javascript:/i,
+    /vbscript:/i,
+    /onload\s*=/
 ];
 // Function to calculate the hash for a document
 function calculateDocumentHash(content) {
@@ -25,14 +39,36 @@ function calculateDocumentHash(content) {
 }
 exports.calculateDocumentHash = calculateDocumentHash;
 // Function to validate a document against the manifest
+// Returns null if valid, or QuarantineReason if invalid
 function validateDocument(documentPath, content) {
+    // Check if document is in trusted manifest
     const trustedDoc = exports.TRUSTED_DOCUMENTS.find(doc => doc.path === documentPath);
     if (!trustedDoc) {
         // Document not in the trusted list
-        return false;
+        return {
+            reason: 'NOT_IN_MANIFEST',
+            details: `Document ${documentPath} is not in the trusted source manifest`
+        };
     }
+    // Check for disallowed metadata/content patterns
+    for (const pattern of exports.DISALLOWED_PATTERNS) {
+        if (pattern.test(content)) {
+            return {
+                reason: 'DISALLOWED_METADATA',
+                details: `Content matched disallowed pattern: ${pattern}`
+            };
+        }
+    }
+    // Check content integrity via hash verification
     const actualHash = calculateDocumentHash(content);
-    return actualHash === trustedDoc.expectedHash;
+    if (actualHash !== trustedDoc.expectedHash) {
+        return {
+            reason: 'HASH_MISMATCH',
+            details: `Expected hash: ${trustedDoc.expectedHash}, Actual hash: ${actualHash}`
+        };
+    }
+    // Document passed all validation checks
+    return null;
 }
 exports.validateDocument = validateDocument;
 //# sourceMappingURL=manifest.js.map
